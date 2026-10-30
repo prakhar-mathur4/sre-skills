@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>sre — an SRE skill for AI agents</title>
+<meta name="description" content="An open-source Agent Skill that makes AI coding agents work like a careful, experienced Site Reliability Engineer. Works with Claude Code, Codex, Cursor, Copilot, Antigravity and Gemini CLI.">
+<meta property="og:title" content="sre — an SRE skill for AI agents">
+<meta property="og:description" content="Mitigate first. Know the blast radius. Change safely. An open-source Agent Skill that gives AI coding agents an SRE's judgment.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://sre.prakharmathur.in/">
+<link rel="canonical" href="https://sre.prakharmathur.in/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23121B22'/%3E%3Cpath d='M6 21h5l3-9 4 13 3-7h5' fill='none' stroke='%23F0592A' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: an on-call runbook — cool instrument-panel paper, one signal-orange accent for "pager", mono for anything an operator would type or read off a graph. */
+:root {
+  --paper: #F3F5F6;
+  --surface: #FFFFFF;
+  --ink: #121B22;
+  --muted: #55636D;
+  --rule: #D7DEE2;
+  --signal: #D9480F;
+  --signal-soft: #FBE6DC;
+  --ok: #1F7A4D;
+  --warn: #B26B00;
+  --term-bg: #121B22;
+  --term-fg: #DCE4E8;
+  --term-dim: #7F909B;
+  --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Helvetica Neue", Arial, system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --wrap: 1120px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0D1317; --surface: #141C22; --ink: #E6ECEF; --muted: #93A3AD; --rule: #24313A;
+    --signal: #F0592A; --signal-soft: #3A1F14; --ok: #4CC38A; --warn: #E0A23A;
+    --term-bg: #090E11; --term-fg: #DCE4E8; --term-dim: #73848F;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0D1317; --surface: #141C22; --ink: #E6ECEF; --muted: #93A3AD; --rule: #24313A;
+  --signal: #F0592A; --signal-soft: #3A1F14; --ok: #4CC38A; --warn: #E0A23A;
+  --term-bg: #090E11; --term-fg: #DCE4E8; --term-dim: #73848F;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font: 400 17px/1.6 var(--body);
+  padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+a { color: inherit; text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; border-radius: 4px; }
+code, pre, kbd { font-family: var(--mono); }
+h1, h2, h3 { font-family: var(--display); line-height: 1.08; text-wrap: balance; margin: 0; }
+p { margin: 0; }
+
+.wrap {
+  max-width: var(--wrap); margin: 0 auto;
+  padding-left: max(20px, env(safe-area-inset-left, 0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+}
+.eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--signal); }
+section { padding-block: 88px; border-top: 1px solid var(--rule); }
+.section-head { display: grid; gap: 14px; max-width: 680px; margin-bottom: 44px; }
+.section-head h2 { font-size: clamp(30px, 4.2vw, 44px); font-weight: 700; letter-spacing: -.02em; }
+.section-head p { color: var(--muted); font-size: 18px; }
+
+/* Nav */
+header.top { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--rule); }
+.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 14px; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font: 800 20px/1 var(--display); letter-spacing: -.01em; }
+.brand svg { width: 28px; height: 28px; flex: none; }
+.top nav { display: flex; align-items: center; gap: 22px; font-size: 15px; }
+.top nav a { text-decoration: none; color: var(--muted); }
+.top nav a:hover { color: var(--ink); }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 8px; font: 600 15px/1 var(--body); text-decoration: none; border: 1px solid var(--ink); background: var(--ink); color: var(--paper); cursor: pointer; }
+.btn:hover { background: var(--signal); border-color: var(--signal); color: #fff; }
+.btn.ghost { background: transparent; color: var(--ink); border-color: var(--rule); }
+.btn.ghost:hover { border-color: var(--ink); background: transparent; color: var(--ink); }
+.top .btn { padding: 8px 14px; font-size: 14px; }
+@media (max-width: 720px) { .top nav a:not(.btn) { display: none; } }
+
+/* Hero */
+.hero { padding-block: 72px 88px; border-top: 0; }
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 56px; align-items: center; }
+@media (max-width: 920px) { .hero .wrap { grid-template-columns: minmax(0, 1fr); gap: 40px; } }
+.hero-copy { display: grid; gap: 24px; min-width: 0; }
+.status { display: inline-flex; align-items: center; gap: 10px; font: 500 13px/1 var(--mono); color: var(--muted); }
+.status .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 4px color-mix(in srgb, var(--ok) 20%, transparent); }
+.hero h1 { font-size: clamp(42px, 6.4vw, 76px); font-weight: 800; letter-spacing: -.035em; }
+.hero h1 em { font-style: normal; color: var(--signal); }
+.hero .lede { font-size: 20px; color: var(--muted); max-width: 33em; }
+.install { display: flex; align-items: stretch; max-width: 100%; border: 1px solid var(--rule); border-radius: 10px; background: var(--surface); overflow: hidden; }
+.install code { flex: 1; min-width: 0; padding: 14px 16px; font-size: 14px; white-space: nowrap; overflow-x: auto; }
+.install code::before { content: "$ "; color: var(--muted); }
+.install button { flex: none; border: 0; border-left: 1px solid var(--rule); background: transparent; color: var(--ink); font: 500 13px var(--mono); padding: 0 16px; cursor: pointer; }
+.install button:hover { color: var(--signal); }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.works { font-size: 14px; color: var(--muted); }
+.works strong { color: var(--ink); font-weight: 500; }
+
+/* Terminal */
+.term { min-width: 0; border-radius: 14px; background: var(--term-bg); color: var(--term-fg); font: 400 13.5px/1.65 var(--mono); box-shadow: 0 30px 60px -30px rgba(10, 20, 28, .45); border: 1px solid color-mix(in srgb, var(--term-fg) 10%, transparent); }
+.term-bar { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid color-mix(in srgb, var(--term-fg) 10%, transparent); color: var(--term-dim); font-size: 12px; }
+.term-bar i { width: 10px; height: 10px; border-radius: 50%; background: color-mix(in srgb, var(--term-fg) 22%, transparent); }
+.term-bar span { margin-left: 8px; }
+.term-body { padding: 18px 20px 22px; overflow-x: auto; }
+.term-body p { white-space: pre-wrap; }
+.term .you { color: #fff; }
+.term .you::before { content: "› "; color: var(--signal); }
+.term .dim { color: var(--term-dim); }
+.term .hl { color: #FFB38F; }
+.term .ok { color: #6FD9A5; }
+.term .warn { color: #F3C26B; }
+.term .gap { height: 10px; }
+
+/* Rules */
+.rules { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 14px; overflow: hidden; }
+@media (max-width: 900px) { .rules { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 580px) { .rules { grid-template-columns: minmax(0, 1fr); } }
+.rule { background: var(--surface); padding: 26px 24px; display: grid; gap: 8px; align-content: start; }
+.rule h3 { font-size: 21px; font-weight: 700; letter-spacing: -.01em; }
+.rule p { color: var(--muted); font-size: 15.5px; }
+.rule .src { font: 400 12px/1.4 var(--mono); color: var(--muted); opacity: .85; margin-top: 4px; }
+
+/* Capabilities */
+.caps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 48px; }
+@media (max-width: 760px) { .caps { grid-template-columns: minmax(0, 1fr); } }
+.cap { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 20px; padding-block: 22px; border-top: 1px solid var(--rule); }
+@media (max-width: 480px) { .cap { grid-template-columns: minmax(0, 1fr); gap: 6px; } }
+.cap dt { font: 600 15px/1.4 var(--body); }
+.cap dd { margin: 0; color: var(--muted); font-size: 15.5px; }
+.cap dd q { color: var(--ink); font-style: italic; quotes: "“" "”"; }
+
+/* Numbers */
+.numbers .wrap > .grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; align-items: start; }
+@media (max-width: 880px) { .numbers .wrap > .grid { grid-template-columns: minmax(0, 1fr); } }
+.budget { background: var(--surface); border: 1px solid var(--rule); border-radius: 14px; padding: 28px; display: grid; gap: 22px; }
+.budget-top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; align-items: baseline; }
+.budget-top h3 { font-size: 22px; }
+.budget-top span { font: 400 13px var(--mono); color: var(--muted); }
+.meter { height: 14px; border-radius: 7px; background: color-mix(in srgb, var(--ok) 22%, var(--surface)); overflow: hidden; position: relative; }
+.meter b { position: absolute; inset: 0 auto 0 0; width: 62%; background: var(--signal); border-radius: 7px 0 0 7px; }
+.meter-legend { display: flex; justify-content: space-between; gap: 12px; font: 400 13px var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.kv { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 460px) { .kv { grid-template-columns: minmax(0, 1fr); } }
+.kv div { display: grid; gap: 4px; }
+.kv dt { font: 500 11.5px/1.2 var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.kv dd { margin: 0; font: 700 26px/1.1 var(--display); font-variant-numeric: tabular-nums; }
+.budget-note { font-size: 14.5px; color: var(--muted); }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 14px; background: var(--surface); }
+table { width: 100%; border-collapse: collapse; font-size: 15px; font-variant-numeric: tabular-nums; }
+caption { text-align: left; padding: 18px 20px 4px; font: 600 15px var(--body); }
+caption span { display: block; font: 400 13px/1.5 var(--mono); color: var(--muted); margin-top: 4px; }
+th, td { text-align: left; padding: 12px 20px; border-top: 1px solid var(--rule); white-space: nowrap; }
+thead th { font: 500 11.5px var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); border-top: 0; }
+td.mono { font-family: var(--mono); }
+.pill { display: inline-block; padding: 3px 9px; border-radius: 999px; font: 500 12px/1.3 var(--mono); }
+.pill.page { background: var(--signal-soft); color: var(--signal); }
+.pill.ticket { background: color-mix(in srgb, var(--warn) 16%, var(--surface)); color: var(--warn); }
+.calc { margin-top: 20px; font-size: 14.5px; color: var(--muted); }
+.calc code { color: var(--ink); background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 2px 7px; font-size: 13px; }
+
+/* Templates */
+.templates { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.tpl { display: grid; gap: 4px; padding: 18px 20px; border: 1px solid var(--rule); border-radius: 10px; background: var(--surface); text-decoration: none; }
+.tpl:hover { border-color: var(--ink); }
+.tpl strong { font-weight: 600; }
+.tpl span { font: 400 12.5px/1.4 var(--mono); color: var(--muted); }
+
+/* Install */
+.tools { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+.tools button { font: 500 14px var(--body); padding: 8px 14px; border-radius: 999px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); cursor: pointer; }
+.tools button[aria-selected="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.codeblock { position: relative; background: var(--term-bg); color: var(--term-fg); border-radius: 12px; }
+.codeblock pre { margin: 0; padding: 20px 22px; overflow-x: auto; font-size: 14px; line-height: 1.7; }
+.codeblock .c { color: var(--term-dim); }
+.codeblock button { position: absolute; top: 10px; right: 10px; font: 500 12px var(--mono); padding: 6px 10px; border-radius: 6px; border: 1px solid color-mix(in srgb, var(--term-fg) 20%, transparent); background: var(--term-bg); color: var(--term-fg); cursor: pointer; }
+.install-note { margin-top: 16px; color: var(--muted); font-size: 15px; }
+
+/* Credits */
+.credits { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; }
+@media (max-width: 900px) { .credits { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .credits { grid-template-columns: minmax(0, 1fr); } }
+.credit { display: grid; gap: 8px; align-content: start; padding-top: 18px; border-top: 2px solid var(--ink); }
+.credit h3 { font-size: 19px; font-weight: 700; }
+.credit p { color: var(--muted); font-size: 15px; }
+.fine { margin-top: 36px; font-size: 14px; color: var(--muted); max-width: 70ch; }
+
+/* CTA + footer */
+.cta { text-align: left; }
+.cta .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 28px; }
+.cta h2 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -.02em; max-width: 20ch; }
+.cta p { color: var(--muted); margin-top: 10px; max-width: 46ch; }
+footer { border-top: 1px solid var(--rule); padding-block: 28px; font-size: 14px; color: var(--muted); }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
+footer nav { display: flex; flex-wrap: wrap; gap: 18px; }
+footer a { text-decoration: none; }
+footer a:hover { color: var(--ink); }
+
+.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 10px 16px; border-radius: 8px; font: 500 14px var(--body); }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="sre home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="currentColor"/><path d="M6 21h5l3-9 4 13 3-7h5" fill="none" stroke="#F0592A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      sre
+    </a>
+    <nav aria-label="Main">
+      <a href="#rules">How it behaves</a>
+      <a href="#what">What it does</a>
+      <a href="#install">Install</a>
+      <a href="#credits">Sources</a>
+      <a class="btn" href="https://github.com/prakhar-mathur4/sre-skills">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-copy">
+        <span class="status"><span class="dot" aria-hidden="true"></span>v1.0.0 · open source · MIT / CC BY 4.0</span>
+        <h1>Give your AI agent an <em>SRE's judgment.</em></h1>
+        <p class="lede">An open-source Agent Skill that makes coding agents work like a careful, experienced Site Reliability Engineer: mitigate first, know the blast radius, and back every recommendation with real numbers.</p>
+        <div class="install" role="group" aria-label="Install command">
+          <code id="clone-cmd">git clone https://github.com/prakhar-mathur4/sre-skills.git ~/sre-skill</code>
+          <button type="button" id="copy-clone" data-copy="clone-cmd">Copy</button>
+        </div>
+        <div class="hero-actions">
+          <a class="btn" href="#install">Install in your agent</a>
+          <a class="btn ghost" href="https://github.com/prakhar-mathur4/sre-skills">Star on GitHub</a>
+        </div>
+        <p class="works">Works with <strong>Claude Code</strong>, <strong>Codex</strong>, <strong>Cursor</strong>, <strong>GitHub Copilot</strong>, <strong>Antigravity</strong> and <strong>Gemini CLI</strong>.</p>
+      </div>
+
+      <figure class="term" aria-label="Example: the agent handling a live incident">
+        <div class="term-bar"><i></i><i></i><i></i><span>on-call · orders-api</span></div>
+        <div class="term-body">
+          <p class="you">orders-api p99 is 4s and MySQL replica lag is 900s and climbing. What do I do right now?</p>
+          <div class="gap"></div>
+          <p><span class="hl">Mitigate first.</span> <span class="dim">Users are hurting now; root cause can wait.</span></p>
+          <p>1. Check what changed in the last hour (deploys, config, cron jobs).</p>
+          <p>2. If a deploy lines up, roll it back.</p>
+          <p><span class="warn">⚠️</span> Rollback touches all pods. Reversible: redeploy v2.3.</p>
+          <p>3. Read-only checks while that runs:</p>
+          <p class="dim">   SHOW PROCESSLIST; SHOW REPLICA STATUS\G</p>
+          <p><span class="warn">⚠️</span> To stop a runaway query, use <span class="hl">KILL QUERY &lt;id&gt;</span>,</p>
+          <p class="dim">   not KILL; it keeps the connection. Confirm first?</p>
+          <div class="gap"></div>
+          <p><span class="ok">✓ Verify:</span> p99 back under the 300 ms SLO for 15 min,</p>
+          <p class="dim">  lag trending down. Then declare mitigated.</p>
+          <p class="dim">  Error budget used so far: 62% (28-day window).</p>
+        </div>
+      </figure>
+    </div>
+  </section>
+
+  <section id="rules">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">How it behaves</span>
+        <h2>Safe to have near production.</h2>
+        <p>The skill gives the agent the habits good SREs follow on every page, every change and every postmortem.</p>
+      </div>
+      <div class="rules">
+        <article class="rule"><h3>Mitigate first</h3><p>Roll back, drain traffic or flip a flag before hunting for the root cause.</p><span class="src">SRE book Ch 14</span></article>
+        <article class="rule"><h3>Know the blast radius</h3><p>Every command comes with what it affects, whether it can be undone, and how. Risky ones are marked ⚠️.</p><span class="src">Workbook Ch 9</span></article>
+        <article class="rule"><h3>Change safely</h3><p>Gradual, observable, reversible. Binary and config pushes cause about 68% of outages.</p><span class="src">Workbook App C</span></article>
+        <article class="rule"><h3>Confirm before acting</h3><p>Read-only checks first. Anything that writes to production waits for your yes.</p><span class="src">Workbook Ch 9</span></article>
+        <article class="rule"><h3>Verify, don't assume</h3><p>Checks that the user-facing signal recovered, and keeps what it saw apart from what it suspects.</p><span class="src">SRE book Ch 12</span></article>
+        <article class="rule"><h3>Blameless, always</h3><p>Asks what the system allowed, not who did it. Action items get owners and types.</p><span class="src">SRE book Ch 15</span></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="what">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">What it does</span>
+        <h2>From the first page to the postmortem.</h2>
+        <p>You don't have to say "SRE". The skill kicks in for any reliability or production-operations question.</p>
+      </div>
+      <dl class="caps">
+        <div class="cap"><dt>Live incidents</dt><dd>Latency, 5xx, CPU, disk, DNS, TCP, MySQL replication lag, Kafka backlogs. Mitigation first, then read-only triage.</dd></div>
+        <div class="cap"><dt>SLOs and budgets</dt><dd>SLIs based on what users feel, realistic targets, and a written error budget policy. Pushes back on <q>five nines</q> with numbers.</dd></div>
+        <div class="cap"><dt>Alerting</dt><dd>Multiwindow burn-rate pages instead of CPU alerts, ticket tiers, and options for low-traffic services. Prometheus rules included.</dd></div>
+        <div class="cap"><dt>Gap reviews</dt><dd><q>What's missing to make this reliable?</q> Every component checked for SLOs, monitoring, redundancy, deploy safety and backups.</dd></div>
+        <div class="cap"><dt>Postmortems</dt><dd>Blameless write-ups from messy notes: UTC timeline, trigger separated from causes, owned and typed action items.</dd></div>
+        <div class="cap"><dt>Rollouts</dt><dd>Canary plans with a concurrent control group, abort criteria and rollback. Config gets the same care as code.</dd></div>
+        <div class="cap"><dt>Capacity</dt><dd>Machines, disk and network estimated with real numbers, N+2 headroom, and what happens when each failure domain dies.</dd></div>
+        <div class="cap"><dt>Teams</dt><dd>On-call sizing, toil budgets, pager load reviews, and how SRE works with dev teams.</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="numbers" id="numbers">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Real numbers</span>
+        <h2>Math, not vibes.</h2>
+        <p>A built-in calculator works out budgets and alert thresholds, so the agent doesn't guess.</p>
+      </div>
+      <div class="grid">
+        <div class="budget">
+          <div class="budget-top"><h3>Checkout API · 99.9% SLO</h3><span>28-day window</span></div>
+          <div>
+            <div class="meter" role="img" aria-label="62% of the error budget used"><b></b></div>
+            <div class="meter-legend"><span>62.0% used</span><span>15.3 min left</span></div>
+          </div>
+          <dl class="kv">
+            <div><dt>Allowed</dt><dd>40.3 min</dd></div>
+            <div><dt>Down so far</dt><dd>25.0 min</dd></div>
+            <div><dt>Achieved</dt><dd>99.938%</dd></div>
+          </dl>
+          <p class="budget-note">Above 50% used with half the window left, the error budget policy asks for extra review and a canary on every change.</p>
+        </div>
+        <div>
+          <div class="table-wrap">
+            <table>
+              <caption>Burn-rate alerts for 99.9%<span>sre_calc.py burn 99.9 --window-days 30</span></caption>
+              <thead><tr><th scope="col">Budget spent</th><th scope="col">Burn rate</th><th scope="col">Error ratio</th><th scope="col">Action</th></tr></thead>
+              <tbody>
+                <tr><td>2% in 1 h</td><td class="mono">14.4×</td><td class="mono">&gt; 1.44%</td><td><span class="pill page">page</span></td></tr>
+                <tr><td>5% in 6 h</td><td class="mono">6.0×</td><td class="mono">&gt; 0.6%</td><td><span class="pill page">page</span></td></tr>
+                <tr><td>10% in 3 d</td><td class="mono">1.0×</td><td class="mono">&gt; 0.1%</td><td><span class="pill ticket">ticket</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="calc">Also: <code>downtime</code>, <code>budget</code>, <code>requests</code>, <code>lowtraffic</code>, and <code>compose</code> for chained or redundant services.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="templates">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Templates</span>
+        <h2>Documents your team can use.</h2>
+        <p>The agent fills these in for your system instead of inventing a format each time.</p>
+      </div>
+      <div class="templates">
+        <a class="tpl" href="https://github.com/prakhar-mathur4/sre-skills/blob/main/assets/slo-document-template.md"><strong>SLO document</strong><span>slo-document-template.md</span></a>
+        <a class="tpl" href="https://github.com/prakhar-mathur4/sre-skills/blob/main/assets/error-budget-policy-template.md"><strong>Error budget policy</strong><span>error-budget-policy-template.md</span></a>
+        <a class="tpl" href="https://github.com/prakhar-mathur4/sre-skills/blob/main/assets/incident-state-document-template.md"><strong>Incident state document</strong><span>incident-state-document-template.md</span></a>
+        <a class="tpl" href="https://github.com/prakhar-mathur4/sre-skills/blob/main/assets/postmortem-template.md"><strong>Postmortem</strong><span>postmortem-template.md</span></a>
+        <a class="tpl" href="https://github.com/prakhar-mathur4/sre-skills/blob/main/assets/postmortem-review-checklist.md"><strong>Postmortem review</strong><span>postmortem-review-checklist.md</span></a>
+        <a class="tpl" href="https://github.com/prakhar-mathur4/sre-skills/blob/main/assets/canary-plan-template.md"><strong>Canary plan</strong><span>canary-plan-template.md</span></a>
+        <a class="tpl" href="https://github.com/prakhar-mathur4/sre-skills/blob/main/assets/launch-checklist.md"><strong>Launch checklist</strong><span>launch-checklist.md</span></a>
+        <a class="tpl" href="https://github.com/prakhar-mathur4/sre-skills/blob/main/assets/capacity-estimate-worksheet.md"><strong>Capacity worksheet</strong><span>capacity-estimate-worksheet.md</span></a>
+        <a class="tpl" href="https://github.com/prakhar-mathur4/sre-skills/blob/main/assets/oncall-handoff-template.md"><strong>On-call handoff</strong><span>oncall-handoff-template.md</span></a>
+        <a class="tpl" href="https://github.com/prakhar-mathur4/sre-skills/blob/main/assets/reliability-gap-assessment.md"><strong>Reliability gap assessment</strong><span>reliability-gap-assessment.md</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section id="install">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Install</span>
+        <h2>One folder. Any agent.</h2>
+        <p>The skill uses the open Agent Skills format. Clone it once, then link it into each tool you use.</p>
+      </div>
+      <div class="tools" role="tablist" aria-label="Choose your tool">
+        <button type="button" role="tab" id="tab-claude" aria-selected="true" data-tool="claude">Claude Code</button>
+        <button type="button" role="tab" id="tab-codex" aria-selected="false" data-tool="codex">Codex</button>
+        <button type="button" role="tab" id="tab-cursor" aria-selected="false" data-tool="cursor">Cursor</button>
+        <button type="button" role="tab" id="tab-copilot" aria-selected="false" data-tool="copilot">GitHub Copilot</button>
+        <button type="button" role="tab" id="tab-antigravity" aria-selected="false" data-tool="antigravity">Antigravity</button>
+        <button type="button" role="tab" id="tab-gemini" aria-selected="false" data-tool="gemini">Gemini CLI</button>
+      </div>
+      <div class="codeblock" role="tabpanel" aria-live="polite">
+        <button type="button" id="copy-install" data-copy="install-cmd">Copy</button>
+        <pre><code id="install-cmd"></code></pre>
+      </div>
+      <p class="install-note" id="install-note"></p>
+    </div>
+  </section>
+
+  <section id="credits">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Sources</span>
+        <h2>Built on field-tested practice.</h2>
+        <p>Every recommendation cites the chapter it comes from, so you can check the reasoning.</p>
+      </div>
+      <div class="credits">
+        <article class="credit"><h3>Site Reliability Engineering</h3><p>Google, 2016. The principles: risk, SLOs, monitoring, incidents, overload and data integrity.</p></article>
+        <article class="credit"><h3>The Site Reliability Workbook</h3><p>Google, 2018. How to put them into practice: burn-rate alerting, canarying, on-call and postmortems.</p></article>
+        <article class="credit"><h3>LinkedIn School of SRE</h3><p>Hands-on commands for Linux, networking, MySQL and message queues. CC BY 4.0.</p></article>
+        <article class="credit"><h3>Personal experience</h3><p>How the rules, templates and safety habits play out in real teams and real incidents.</p></article>
+      </div>
+      <p class="fine">No book text is included. Both books can be read free online at <a href="https://sre.google/books/">sre.google/books</a>. This project isn't affiliated with or endorsed by Google, O'Reilly or LinkedIn.</p>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="wrap">
+      <div>
+        <h2>Found advice a real SRE wouldn't give?</h2>
+        <p>Tell us. Corrections from people who run production systems make the skill better for everyone.</p>
+      </div>
+      <div class="hero-actions">
+        <a class="btn" href="https://github.com/prakhar-mathur4/sre-skills/issues/new/choose">Report bad advice</a>
+        <a class="btn ghost" href="https://github.com/prakhar-mathur4/sre-skills/blob/main/CONTRIBUTING.md">Contribute</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>sre · code MIT, content CC BY 4.0</span>
+    <nav aria-label="Footer">
+      <a href="https://github.com/prakhar-mathur4/sre-skills">GitHub</a>
+      <a href="https://github.com/prakhar-mathur4/sre-skills/releases">Releases</a>
+      <a href="https://github.com/prakhar-mathur4/sre-skills/blob/main/CHANGELOG.md">Changelog</a>
+      <a href="https://github.com/prakhar-mathur4/sre-skills/blob/main/NOTICE">Notice</a>
+    </nav>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" hidden>Copied</div>
+
+<script>
+(function () {
+  var CLONE = "git clone https://github.com/prakhar-mathur4/sre-skills.git ~/sre-skill\n";
+  var TOOLS = {
+    claude: {
+      cmd: CLONE + "mkdir -p ~/.claude/skills && ln -s ~/sre-skill ~/.claude/skills/sre",
+      note: "Restart Claude Code. Call it with /sre, or just ask an SRE question."
+    },
+    codex: {
+      cmd: CLONE + "mkdir -p ~/.codex/skills && ln -s ~/sre-skill ~/.codex/skills/sre",
+      note: "Codex reads $CODEX_HOME/skills (default ~/.codex/skills). Call it with $sre."
+    },
+    cursor: {
+      cmd: CLONE + "cd /path/to/your/project\nmkdir -p .cursor/skills && ln -s ~/sre-skill .cursor/skills/sre",
+      note: "Cursor reads skills per project. Add .cursor/skills/sre/ to that project's .gitignore."
+    },
+    copilot: {
+      cmd: CLONE + "mkdir -p ~/.copilot/skills && ln -s ~/sre-skill ~/.copilot/skills/sre",
+      note: "For a single project, link it into .github/skills/sre instead."
+    },
+    antigravity: {
+      cmd: CLONE + "mkdir -p ~/.gemini/antigravity/skills && ln -s ~/sre-skill ~/.gemini/antigravity/skills/sre",
+      note: "For a single project, link it into .agent/skills/sre instead."
+    },
+    gemini: {
+      cmd: CLONE + "cd /path/to/your/project\nmkdir -p .gemini/skills && ln -s ~/sre-skill .gemini/skills/sre",
+      note: "Gemini CLI reads skills per project."
+    }
+  };
+
+  var codeEl = document.getElementById("install-cmd");
+  var noteEl = document.getElementById("install-note");
+  var tabs = document.querySelectorAll(".tools button");
+
+  function show(tool) {
+    var t = TOOLS[tool];
+    codeEl.textContent = t.cmd;
+    noteEl.textContent = t.note;
+    tabs.forEach(function (b) { b.setAttribute("aria-selected", String(b.dataset.tool === tool)); });
+  }
+  tabs.forEach(function (b) { b.addEventListener("click", function () { show(b.dataset.tool); }); });
+  show("claude");
+
+  var toast = document.getElementById("toast");
+  var timer;
+  function flash(msg) {
+    toast.textContent = msg; toast.hidden = false;
+    clearTimeout(timer); timer = setTimeout(function () { toast.hidden = true; }, 1600);
+  }
+  function selectText(el) {
+    var r = document.createRange(); r.selectNodeContents(el);
+    var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+  }
+  document.querySelectorAll("[data-copy]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var el = document.getElementById(btn.dataset.copy);
+      var text = el.textContent;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () { flash("Copied"); }, function () { selectText(el); flash("Press ⌘C to copy"); });
+      } else { selectText(el); flash("Press ⌘C to copy"); }
+    });
+  });
+})();
+</script>
+</body>
+</html>
