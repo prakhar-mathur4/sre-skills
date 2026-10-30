@@ -1,10 +1,13 @@
 # `sre`: a Site Reliability Engineering skill for Claude
 
-This skill makes Claude work like an experienced, careful SRE. It bases its advice on three sources:
+This skill makes Claude work like an experienced, careful SRE. It was built with reference to these sources:
 
 - **Site Reliability Engineering** (Google, 2016): the principles.
 - **The Site Reliability Workbook** (Google, 2018): how to put them into practice.
-- **LinkedIn School of SRE**: hands-on commands for Linux, networking, MySQL and message queues.
+- **[LinkedIn School of SRE](https://linkedin.github.io/school-of-sre/)**: hands-on commands for Linux, networking, MySQL and message queues.
+- **Personal experience** running production systems: how the rules, templates and safety habits play out in real teams and real incidents.
+
+The books and School of SRE are credited in [NOTICE](NOTICE). No book text is copied into this repo; the skill puts the ideas in its own words and cites the chapter each one comes from.
 
 Claude doesn't give generic advice with this skill. It applies the books' specific rules to your stack and your numbers, says which chapter each rule comes from, and does the error-budget math with a calculator.
 
@@ -230,4 +233,4 @@ cd sre && claude plugin eval . --allow-tools Write,Edit,Bash --scaffold
 
 - **Code** (`scripts/`): [MIT](LICENSE).
 - **Content** (`SKILL.md`, `README.md`, `assets/`, `evals/`): [CC BY 4.0](LICENSE-docs). Reuse it freely with credit.
-- **Sources.** The skill cites *Site Reliability Engineering* (© Google, 2016) and *The Site Reliability Workbook* (© Google LLC, 2018), both published by O'Reilly Media, and draws on [LinkedIn School of SRE](https://linkedin.github.io/school-of-sre/) (CC BY 4.0). No book text is included. See [NOTICE](NOTICE) for full attribution. This project isn't affiliated with or endorsed by Google, O'Reilly or LinkedIn.
+- **Sources.** The skill is made with reference to two books, LinkedIn School of SRE and the author's personal experience. It cites *Site Reliability Engineering* (© Google, 2016) and *The Site Reliability Workbook* (© Google LLC, 2018), both published by O'Reilly Media, and draws on [LinkedIn School of SRE](https://linkedin.github.io/school-of-sre/) (CC BY 4.0). No book text is included. See [NOTICE](NOTICE) for full attribution. This project isn't affiliated with or endorsed by Google, O'Reilly or LinkedIn.

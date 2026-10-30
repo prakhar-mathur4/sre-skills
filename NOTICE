@@ -1,6 +1,10 @@
 sre skill
 Copyright (c) 2026 prakhar-mathur4
 
+This skill was made with reference to the books "Site Reliability
+Engineering" and "The Site Reliability Workbook", LinkedIn's School of
+SRE, and the author's personal experience operating production systems.
+
 Licensing
 - Code (scripts/ and any other source code): MIT License, see LICENSE.
 - Documentation and content (SKILL.md, README.md, assets/, evals/):
