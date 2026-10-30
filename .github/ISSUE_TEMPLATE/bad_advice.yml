@@ -1,0 +1,62 @@
+name: Bad SRE advice
+description: The skill gave advice that was wrong, unsafe, or not what a good SRE would do.
+title: "[Advice]: "
+labels: ["advice"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks! Real-world corrections are the most useful feedback this project gets.
+        Please remove hostnames, IPs, credentials and customer data before posting.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - SLOs / error budgets
+        - Monitoring / alerting
+        - Incident response / live troubleshooting
+        - Postmortems
+        - Releases / canary / config changes
+        - Capacity / overload / resilience
+        - Data / backups
+        - On-call / toil / teams
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: How bad was it?
+      options:
+        - Unsafe (could cause or worsen an outage, or lose data)
+        - Wrong (incorrect facts, numbers or thresholds)
+        - Weak (generic, missing an important practice)
+    validations:
+      required: true
+  - type: input
+    id: agent
+    attributes:
+      label: Agent and model
+      placeholder: e.g. Claude Code with Opus, Codex, Cursor
+  - type: textarea
+    id: prompt
+    attributes:
+      label: Prompt
+      description: What you asked.
+    validations:
+      required: true
+  - type: textarea
+    id: got
+    attributes:
+      label: What the agent said or did
+      description: Paste the relevant part.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What a good SRE would do instead
+      description: Include a source (chapter citation, docs link) or describe your experience.
+    validations:
+      required: true

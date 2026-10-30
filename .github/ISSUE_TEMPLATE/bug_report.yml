@@ -1,0 +1,36 @@
+name: Bug report
+description: Something is broken in the calculator, a template, the install steps or the checks.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: part
+    attributes:
+      label: Which part?
+      options:
+        - scripts/sre_calc.py
+        - A template in assets/
+        - Install / skill not loading
+        - SKILL.md
+        - Evals or automated checks
+        - README / docs
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: Include the exact command and its output, or the error message.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      placeholder: e.g. macOS 15, Python 3.12, Claude Code 2.x / Codex / Cursor

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or help using the skill
+    url: https://github.com/prakhar-mathur4/sre-skills/discussions
+    about: Ask in Discussions.
+  - name: Security problem or unsafe guidance
+    url: https://github.com/prakhar-mathur4/sre-skills/security/advisories/new
+    about: Report privately, not in a public issue.

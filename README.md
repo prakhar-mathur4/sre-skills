@@ -1,5 +1,7 @@
 # `sre`: a Site Reliability Engineering skill for Claude
 
+[![checks](https://github.com/prakhar-mathur4/sre-skills/actions/workflows/checks.yml/badge.svg)](https://github.com/prakhar-mathur4/sre-skills/actions/workflows/checks.yml) [![Code: MIT](https://img.shields.io/badge/code-MIT-blue.svg)](LICENSE) [![Content: CC BY 4.0](https://img.shields.io/badge/content-CC%20BY%204.0-lightgrey.svg)](LICENSE-docs)
+
 This skill makes Claude work like an experienced, careful SRE. It was built with reference to these sources:
 
 - **Site Reliability Engineering** (Google, 2016): the principles.
@@ -56,6 +58,7 @@ sre/
 ├── SKILL.md                      Instructions Claude follows (rules, modes, topic table)
 ├── README.md                     This file
 ├── LICENSE, LICENSE-docs, NOTICE
+├── CONTRIBUTING.md, CODE_OF_CONDUCT.md, SECURITY.md, CHANGELOG.md
 ├── assets/                       Templates Claude fills in
 │   ├── slo-document-template.md
 │   ├── error-budget-policy-template.md
@@ -69,7 +72,10 @@ sre/
 │   └── reliability-gap-assessment.md
 ├── scripts/
 │   └── sre_calc.py               Calculator for availability and error budgets
-└── evals/                        6 test cases used to check the skill
+├── evals/                        6 test cases used to check the skill
+├── tests/                        calculator tests
+├── tools/check_skill.py          repo checks (frontmatter, links, no private files)
+└── .github/                      automated checks, issue and PR templates
 ```
 
 Claude reads only what it needs: `SKILL.md` first, then the template or calculator the task calls for. It cites the books by chapter, so you can look up the source; both books are free to read online at [sre.google/books](https://sre.google/books/).
@@ -212,11 +218,19 @@ The global folders in your home directory (Option A) avoid this problem entirely
 
 ## Testing
 
-The `evals/` folder has 6 realistic test cases: SLO design, an alert review, a postmortem, a canary rollout, a live MySQL incident, and a low-traffic SLO. Each one has pass/fail checks. They were run with and without the skill, and the results are in `../sre-workspace/`.
+The `evals/` folder has 6 realistic test cases: SLO design, an alert review, a postmortem, a canary rollout, a live MySQL incident, and a low-traffic SLO. Each one has pass/fail checks. During development they were run with and without the skill: in the first round the agent passed 100% of checks with the skill and 86.9% without it.
 
 With Claude Code you can rerun them yourself:
 ```bash
-cd sre && claude plugin eval . --allow-tools Write,Edit,Bash --scaffold
+claude plugin eval . --allow-tools Write,Edit,Bash --scaffold
+```
+
+Every push and pull request also runs automated checks: the skill's structure and links, and the calculator's math. To run them locally:
+
+```bash
+pip install pyyaml
+python3 tools/check_skill.py
+python3 -m unittest discover -s tests
 ```
 
 ---
@@ -226,6 +240,12 @@ cd sre && claude plugin eval . --allow-tools Write,Edit,Bash --scaffold
 - **The Google books are from 2016 and 2018** and describe Google's own tools (Borg, Borgmon, Chubby). Claude translates them to Kubernetes, Prometheus, Datadog, PagerDuty and so on, and treats the Workbook as newer where the two books differ.
 - **Corrections to the sources.** The Workbook's low-traffic example says a "1,000x" burn rate where the arithmetic gives 100x. School of SRE has an error in TIME_WAIT timing, one in an XtraBackup restore step, and a wrong definition of differential backups. The skill uses the corrected figures.
 - **Claude's advice is still advice.** Check metric names, labels and thresholds against your own system before shipping. Test new alert rules (e.g. with `promtool test rules`) and run them in a non-paging channel first.
+
+---
+
+## Contributing
+
+Contributions are welcome, especially corrections from people who run production systems. See [CONTRIBUTING.md](CONTRIBUTING.md). In short: never paste book text (cite the chapter instead), keep risky commands marked ⚠️, and run the checks before opening a pull request. Report bad advice with the "Bad SRE advice" issue form, ask questions in Discussions, and report security problems privately (see [SECURITY.md](SECURITY.md)).
 
 ---
 
