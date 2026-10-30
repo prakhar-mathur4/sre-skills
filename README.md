@@ -2,6 +2,8 @@
 
 [![checks](https://github.com/prakhar-mathur4/sre-skills/actions/workflows/checks.yml/badge.svg)](https://github.com/prakhar-mathur4/sre-skills/actions/workflows/checks.yml) [![Code: MIT](https://img.shields.io/badge/code-MIT-blue.svg)](LICENSE) [![Content: CC BY 4.0](https://img.shields.io/badge/content-CC%20BY%204.0-lightgrey.svg)](LICENSE-docs)
 
+**Website:** [sre.prakharmathur.in](https://sre.prakharmathur.in)
+
 This skill makes Claude work like an experienced, careful SRE. It was built with reference to these sources:
 
 - **Site Reliability Engineering** (Google, 2016): the principles.
