@@ -129,7 +129,7 @@ Keep the skill in one place and link it into each tool, so one update reaches al
 First get the skill:
 
 ```bash
-git clone https://github.com/<your-username>/<repo>.git ~/sre-skill
+git clone https://github.com/prakhar-mathur4/sre-skills.git ~/sre-skill
 ```
 
 Then link it:
