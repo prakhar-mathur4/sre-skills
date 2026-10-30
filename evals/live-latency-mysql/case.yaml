@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: live-latency-mysql
+expected_outcome: |
+  Response prioritises mitigation (stopping the suspect cron / shifting reads to primary carefully), uses read-only diagnostics first, flags risky actions, gives specific MySQL and kubectl commands, suggests incident declaration/roles, and asks for specific outputs.

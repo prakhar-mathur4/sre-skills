@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: slo-checkout-api
+expected_outcome: |
+  Produces slo.md with user-centric SLIs (availability + latency percentile), a realistic target (not 99.999%) with rationale pushing back on five nines, the error budget quantified in minutes/requests, a written error budget policy with consequences, and SLO-based symptom alerts (e.g., burn-rate) expressed for Prometheus.

@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: canary-config-rollout
+expected_outcome: |
+  rollout-plan.md gives a staged canary plan for both the binary and the config change, with a concurrent control group, ranked metrics, promote/abort criteria, tested rollback, and pushes back on the Friday-4pm timing and on shipping both changes at once.

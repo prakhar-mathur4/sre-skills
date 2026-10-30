@@ -1,0 +1,31 @@
+sre skill
+Copyright (c) 2026 prakhar-mathur4
+
+Licensing
+- Code (scripts/ and any other source code): MIT License, see LICENSE.
+- Documentation and content (SKILL.md, README.md, assets/, evals/):
+  Creative Commons Attribution 4.0 International (CC BY 4.0), see
+  LICENSE-docs.
+
+The references/ folder is not distributed in this repository.
+
+Third-party material
+- Ideas and operational guidance are drawn from "School of SRE" by LinkedIn
+  Corporation (https://linkedin.github.io/school-of-sre/,
+  https://github.com/linkedin/school-of-sre), Copyright 2020 LinkedIn
+  Corporation, licensed under CC BY 4.0
+  (https://creativecommons.org/licenses/by/4.0/).
+  Changes: content was condensed, reorganised into reference cards,
+  rewritten, and extended with safety notes. LinkedIn does not endorse
+  this project.
+
+Books referenced (not included)
+- "Site Reliability Engineering: How Google Runs Production Systems"
+  (Beyer, Jones, Petoff, Murphy; O'Reilly Media, 2016), Copyright Google, Inc.
+- "The Site Reliability Workbook: Practical Ways to Implement SRE"
+  (Beyer, Murphy, Rensin, Kawahara, Thorne; O'Reilly Media, 2018),
+  Copyright Google LLC.
+  This repository contains no text of these books. It cites them by chapter
+  and summarises their ideas in its own words. Both books can be read free
+  online at https://sre.google/books/. This project is not affiliated with
+  or endorsed by Google or O'Reilly Media.

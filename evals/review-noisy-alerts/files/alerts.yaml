@@ -1,0 +1,30 @@
+groups:
+- name: payments
+  rules:
+  - alert: HighCPU
+    expr: avg by (pod) (rate(container_cpu_usage_seconds_total{namespace="payments"}[5m])) > 0.8
+    for: 1m
+    labels: {severity: page}
+  - alert: HighMemory
+    expr: container_memory_working_set_bytes{namespace="payments"} / container_spec_memory_limit_bytes > 0.75
+    for: 2m
+    labels: {severity: page}
+  - alert: PodRestarted
+    expr: increase(kube_pod_container_status_restarts_total{namespace="payments"}[10m]) > 0
+    labels: {severity: page}
+  - alert: AvgLatencyHigh
+    expr: rate(http_request_duration_seconds_sum[1m]) / rate(http_request_duration_seconds_count[1m]) > 0.5
+    labels: {severity: page}
+  - alert: Any5xx
+    expr: sum(rate(http_requests_total{status=~"5.."}[1m])) > 0
+    labels: {severity: page}
+  - alert: DiskFilling
+    expr: node_filesystem_avail_bytes / node_filesystem_size_bytes < 0.3
+    for: 5m
+    labels: {severity: page}
+  - alert: QueueBacklog
+    expr: rabbitmq_queue_messages{queue="settlements"} > 1000
+    labels: {severity: page}
+  - alert: CertExpiringSoon
+    expr: (probe_ssl_earliest_cert_expiry - time()) / 86400 < 30
+    labels: {severity: page}

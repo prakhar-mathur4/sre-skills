@@ -1,0 +1,9 @@
+# Reference material (includes copyrighted book text, © Google,
+# all rights reserved). Keep it local only; never commit it.
+references/
+*.pdf
+
+# Local test runs
+*-workspace/
+.DS_Store
+__pycache__/

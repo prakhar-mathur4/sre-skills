@@ -1,0 +1,18 @@
+#inc-2026-10-14 slack export (times IST)
+
+14:02 ravi: pushing new config for pricing-svc, lowering cache TTL from 300s to 5s to fix stale prices
+14:09 alert: orders-api 5xx > 5% (pagerduty -> meera)
+14:11 meera: looking. orders-api pods fine cpu wise but lots of timeouts to pricing-svc
+14:15 meera: pricing-svc p99 is 12s, db cpu at 100%
+14:18 arjun: orders-api retries pricing calls 5 times with no backoff, mobile app also retries 3x on its own
+14:20 meera: declaring sev1. i'll be IC? arjun can you do comms
+14:24 meera: scaling pricing-svc from 6 to 20 pods
+14:31 meera: worse. db connections maxed out (500/500). more pods = more connections
+14:35 arjun: status page updated, checkout degraded
+14:38 ravi: i think its my config change, reverting TTL to 300
+14:44 meera: revert deployed. cache cold so db still hammered
+14:47 meera: scaling pricing back to 6, temporarily disabling retries in orders-api via feature flag
+14:55 meera: db cpu dropping, 5xx down to 1%
+15:06 meera: error rate normal. leaving flag on for now
+15:20 arjun: status page resolved
+notes: ~41 min of checkout errors. finance estimates ~3,800 failed orders, maybe 60% retried successfully later. ravi should have tested the config in staging. no alert on db cpu or connection saturation. pricing svc has no load shedding. config changes don't go through canary.

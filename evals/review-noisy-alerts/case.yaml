@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: review-noisy-alerts
+expected_outcome: |
+  Review identifies cause-based/non-actionable alerts (CPU, memory, single pod restarts, average latency), recommends symptom/SLO-based paging with tickets for the rest, comments on the on-call load and the 4-person rotation size, and supplies a rewritten rules file in valid Prometheus YAML.
+context:
+  scaffold_script: place-files.sh

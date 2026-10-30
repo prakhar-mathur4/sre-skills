@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: low-traffic-admin-slo
+expected_outcome: |
+  admin-api-slo.md shows numerically that ~200 req/day at 99.9% allows only a handful of failures and that one failure triggers a huge burn rate, recommends alternatives (synthetic probes, grouping, lower SLO/longer window, ticket not page), and proposes a concrete SLO and alerting setup.

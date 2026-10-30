@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: postmortem-from-notes
+expected_outcome: |
+  Produces a blameless postmortem with summary, impact quantified, trigger vs root/contributing causes (retry storm/cascading failure), detection, resolution, UTC timeline, typed action items with owners, and lessons learned; does not blame the engineer who pushed the config.
+context:
+  scaffold_script: place-files.sh
