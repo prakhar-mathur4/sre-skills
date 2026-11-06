@@ -33,3 +33,15 @@ Books referenced (not included)
   and summarises their ideas in its own words. Both books can be read free
   online at https://sre.google/books/. This project is not affiliated with
   or endorsed by Google or O'Reilly Media.
+
+Public incident reports used as inspiration (facts only, no text reused)
+- evals/cert-expiry-alert-went-to-wrong-channel: inspired by a public
+  vendor status-page incident report on an expired TLS certificate (July
+  2026), https://status.lucidworks.com/incidents/vxmrbxrlzbcl
+- evals/quota-cut-below-real-usage: inspired by a public cloud provider
+  incident report on a quota change (14 December 2020),
+  https://status.cloud.google.com/incident/zall/20013
+  The eval scenarios are rewritten and invented; no source text, numbers or
+  diagrams are copied. The publishers are not affiliated with or endorsing
+  this project. evals/error-budget-freeze-fix-exception is a synthetic
+  scenario and is not based on any real incident.

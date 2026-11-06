@@ -4,6 +4,12 @@ Notable changes to this skill. Versions follow [Semantic Versioning](https://sem
 
 ## [Unreleased]
 
+### Added
+- Eval `clean-logs-recent-change`: an alert fires, app logs look clean, and the cause is a recent gateway config change.
+- Eval `cert-expiry-alert-went-to-wrong-channel`: an expired certificate whose warning alert had no owner or page, while the monitoring-to-pager path had been silent for weeks.
+- Eval `quota-cut-below-real-usage`: quota enforcement flips on, the dashboard reports zero usage, and logins fail.
+- Eval `error-budget-freeze-fix-exception` (synthetic): an "at risk" error budget, a partner-dated feature, and a reliability fix, testing partial-freeze judgment.
+
 ## [1.0.0] - 2026-10-30
 
 First public release.

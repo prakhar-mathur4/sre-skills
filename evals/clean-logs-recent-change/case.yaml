@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: clean-logs-recent-change
+expected_outcome: |
+  Response asks "what changed?" before digging into logs, identifies the 13:58 api-gateway timeout change (3000ms -> 300ms) as the prime suspect because it lines up with the 14:00 alert, and explains why the app logs look clean (the gateway times out requests the app later completes; logged durations of 400-500ms exceed 300ms). It recommends rolling back the config change first and says how to undo and verify it, does not call it a monitoring glitch or invent a cause from the clean logs, and marks risky commands with ⚠️ and their blast radius.
