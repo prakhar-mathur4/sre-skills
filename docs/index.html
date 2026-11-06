@@ -189,6 +189,19 @@ td.mono { font-family: var(--mono); }
 .codeblock button { position: absolute; top: 10px; right: 10px; font: 500 12px var(--mono); padding: 6px 10px; border-radius: 6px; border: 1px solid color-mix(in srgb, var(--term-fg) 20%, transparent); background: var(--term-bg); color: var(--term-fg); cursor: pointer; }
 .install-note { margin-top: 16px; color: var(--muted); font-size: 15px; }
 
+/* Start here */
+.steps { display: grid; gap: 28px; counter-reset: step; }
+.step { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 32px; padding-top: 24px; border-top: 1px solid var(--rule); }
+@media (max-width: 820px) { .step { grid-template-columns: minmax(0, 1fr); gap: 14px; } }
+.step-copy { display: grid; gap: 8px; align-content: start; }
+.step-copy h3 { font-size: 21px; font-weight: 700; letter-spacing: -.01em; }
+.step-copy h3::before { counter-increment: step; content: counter(step, decimal-leading-zero); display: block; font: 500 12px/1 var(--mono); letter-spacing: .12em; color: var(--signal); margin-bottom: 10px; }
+.step-copy p { color: var(--muted); font-size: 15.5px; }
+.prompt pre { white-space: pre-wrap; padding-top: 44px; }
+.callout { margin-top: 36px; display: grid; gap: 6px; padding: 20px 22px; border-left: 3px solid var(--signal); background: var(--surface); border-radius: 0 10px 10px 0; max-width: 760px; }
+.callout strong { font-weight: 600; }
+.callout p { color: var(--muted); font-size: 15.5px; }
+
 /* Credits */
 .credits { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; }
 @media (max-width: 900px) { .credits { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
@@ -224,6 +237,7 @@ footer a:hover { color: var(--ink); }
       <a href="#rules">How it behaves</a>
       <a href="#what">What it does</a>
       <a href="#install">Install</a>
+      <a href="#start">Start here</a>
       <a href="#credits">Sources</a>
       <a class="btn" href="https://github.com/prakhar-mathur4/sre-skills">GitHub</a>
     </nav>
@@ -389,6 +403,66 @@ footer a:hover { color: var(--ink); }
         <pre><code id="install-cmd"></code></pre>
       </div>
       <p class="install-note" id="install-note"></p>
+    </div>
+  </section>
+
+  <section id="start">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Start here</span>
+        <h2>Let it learn your system first.</h2>
+        <p>Advice without context is a guess. Have the agent learn how your system runs before it reviews anything, and save what it learns so every later session starts from there.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-copy">
+            <h3>Learn the system</h3>
+            <p>It asks a few short questions, then reads your Terraform, manifests, code and alert rules. Read-only.</p>
+          </div>
+          <div class="codeblock prompt">
+            <button type="button" data-copy="prompt-learn">Copy</button>
+            <pre><code id="prompt-learn">Use the sre skill. Before giving any reliability advice, learn our system and build a system profile.
+
+1. Ask me first, in one short list:
+   - What the product is and who uses it
+   - The 2–3 most important user flows (e.g. login, checkout)
+   - Team size, on-call setup, and whether we have SLOs today
+
+2. Then read the repo (read-only, change nothing):
+   - Terraform / Helm / Kubernetes / docker-compose: where it runs, which cloud, databases, queues, caches
+   - Source code: services, endpoints, dependencies, timeouts, retries, health checks
+   - Monitoring: alert rules, dashboards, logging and tracing
+
+3. Write it to sre-context.md: architecture, critical flows, current monitoring, and anything you couldn't verify.
+
+Show me the profile and wait for my corrections before analyzing anything.</code></pre>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-copy">
+            <h3>No repo access?</h3>
+            <p>Answer its questions instead. You get the same profile.</p>
+          </div>
+          <div class="codeblock prompt">
+            <button type="button" data-copy="prompt-ask">Copy</button>
+            <pre><code id="prompt-ask">Use the sre skill. Before any advice, ask me what you need to understand our system: product, users, critical flows, where it runs (VMs / Kubernetes / Docker / serverless), cloud, databases and queues, monitoring tools, team size and on-call. Ask in one short list. Then write a system profile I can save to sre-context.md, and mark anything you're unsure about.</code></pre>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-copy">
+            <h3>Find the gaps</h3>
+            <p>Now the review is about your system: missing monitoring, which SLOs to set, and which alerts are wrong.</p>
+          </div>
+          <div class="codeblock prompt">
+            <button type="button" data-copy="prompt-gaps">Copy</button>
+            <pre><code id="prompt-gaps">Using sre-context.md, find our reliability gaps: what monitoring is missing, which SLOs we should set, and whether our current alerts are right. Rank the findings by user impact.</code></pre>
+          </div>
+        </div>
+      </div>
+      <div class="callout">
+        <strong>Being paged right now? Skip the questions.</strong>
+        <p>In a live incident, mitigation comes first. Tell it what users are seeing and what changed recently. If you have an sre-context.md, say "read sre-context.md first".</p>
+      </div>
     </div>
   </section>
 
