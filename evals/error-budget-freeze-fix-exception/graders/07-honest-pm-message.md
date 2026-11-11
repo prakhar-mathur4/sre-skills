@@ -4,4 +4,4 @@ focus: trace
 weight: 1
 ---
 
-The response gives a short, honest message the user can send to the PM that includes specifics (about 77% of the budget used, about 9 minutes left, 18 days remaining, the Thursday launch date) and the options or decision path, without promising the feature will definitely ship and without framing the policy as a punishment or blanket ban
+The response gives a short message the user can send to the PM that (a) states the key numbers (about 77% of the budget used, about 9 minutes left), (b) says what the Thursday launch depends on or what the fallback is (for example a staged rollout, a slip, or a partial launch), inside the message itself, and (c) does not flatly promise the feature will ship or frame the policy as a punishment or blanket ban

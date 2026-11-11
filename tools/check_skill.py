@@ -72,7 +72,7 @@ def check_readme_links():
 
 
 def check_evals():
-    cases = [p for p in (ROOT / "evals").iterdir() if p.is_dir()]
+    cases = [p for p in (ROOT / "evals").iterdir() if p.is_dir() and p.name != "results"]
     if not cases:
         err("evals/: no test cases")
     for case in cases:

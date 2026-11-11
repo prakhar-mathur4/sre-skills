@@ -71,7 +71,8 @@ sre/
 │   ├── launch-checklist.md
 │   ├── capacity-estimate-worksheet.md
 │   ├── oncall-handoff-template.md
-│   └── reliability-gap-assessment.md
+│   ├── reliability-gap-assessment.md
+│   └── alerting-pipeline-health-checklist.md
 ├── scripts/
 │   └── sre_calc.py               Calculator for availability and error budgets
 ├── evals/                        10 test cases used to check the skill
@@ -199,7 +200,7 @@ The global folders in your home directory (Option A) avoid this problem entirely
 ### Differences between tools
 
 - **When it triggers:** each tool decides from the skill's `description` whether to load it, so it may kick in more or less often outside Claude Code. Calling it directly always works.
-- **Description length:** the Agent Skills format limits `description` to 1,024 characters. This skill's description is currently longer, and some tools may cut it off or reject the skill. If a tool won't load it, shorten the `description` in `SKILL.md` to under 1,024 characters.
+- **Description length:** the Agent Skills format limits `description` to 1,024 characters. This skill's description is 1,017 characters, just under the limit (`tools/check_skill.py` enforces it). If you edit it and a tool stops loading the skill, check the length first.
 - **Asking before production changes:** the skill tells the agent to ask before any change to production, but whether a command actually runs without asking depends on each tool's own permission settings. Keep those on "ask" when the agent has production access.
 
 ---
@@ -220,7 +221,7 @@ The global folders in your home directory (Option A) avoid this problem entirely
 
 ## Testing
 
-The `evals/` folder has 10 realistic test cases: SLO design, an alert review, a postmortem, a canary rollout, a live MySQL incident, a low-traffic SLO, clean logs after a recent config change, an expired certificate with a dead alert path, a quota cut with a misleading dashboard, and an error-budget freeze decision (synthetic). Each one has pass/fail checks. The first six were run with and without the skill during development: in the first round the agent passed 100% of checks with the skill and 86.9% without it.
+The `evals/` folder has 10 realistic test cases: SLO design, an alert review, a postmortem, a canary rollout, a live MySQL incident, a low-traffic SLO, clean logs after a recent config change, an expired certificate with a dead alert path, a quota cut with a misleading dashboard, and an error-budget freeze decision (synthetic). Each one has pass/fail checks. In an early round, on three of the cases and with one run each, the agent passed 100% of checks with the skill and about 87% without it. A later run of all ten (three runs each, with and without the skill) showed the skill helping on most of the older cases and giving mixed results on the four newer ones. Scores vary by up to 0.2 between runs of the same case at that sample size, so treat the evals as regression checks, not proof of benefit.
 
 With Claude Code you can rerun them yourself:
 ```bash
