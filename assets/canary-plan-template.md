@@ -21,6 +21,11 @@ Based on Site Reliability Workbook Ch 16 (Canarying Releases) and Ch 14 (safe co
 
 Pick durations that fit release velocity (daily releases can't have week-long canaries) and the traffic rate (higher QPS → shorter time to a representative sample). Avoid overlapping canaries.
 
+## Config and blast-radius checks (before stage 1)
+- [ ] Diff the **rendered/effective config** in the running canary against control, not just the source diff. Redact secrets before pasting. Defaults, templates and overrides can make the live value differ from what was reviewed.
+- [ ] Ask: **what does this change activate later or elsewhere?** Examples: a topology, policy, quota or data push that replicates globally; a dormant setting this change switches on; a shared config read by other services.
+- **Abort if:** the effective diff contains anything not in the reviewed change, or the answer to "later or elsewhere" is unknown or reaches beyond the canary population.
+
 ## Metrics (≤ ~12, ranked by how well they show user-visible problems)
 1. Error ratio (SLI) — canary vs control
 2. Latency percentiles (SLI) — canary vs control

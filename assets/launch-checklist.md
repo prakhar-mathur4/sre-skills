@@ -28,12 +28,14 @@ Adapted from SRE book Ch 27 (Launch Coordination Checklist), Appendix E, Ch 32 (
 - [ ] Alert rules unit-tested (e.g., `promtool test rules`); low-traffic paths checked (`sre_calc.py lowtraffic`)
 - [ ] Every page has a runbook/playbook entry
 - [ ] Black-box probing of user-facing endpoints
+- [ ] Cert/credential/domain/quota expiry inventory, with owners and alerts that page before the point of no return (`alerting-pipeline-health-checklist.md`)
 
 ## Release & rollback
 - [ ] Reproducible, hermetic builds; config under version control and reviewed
 - [ ] Canary / gradual rollout plan with automated health gating, concurrent control group, and defined abort criteria (`canary-plan-template.md`)
 - [ ] Config changes go through the same gradual, reversible rollout as binaries; config is hermetic and reviewed
 - [ ] Feature flags for risky behavior; tested kill switch
+- [ ] Effective config verified in the running canary (not just the source diff)
 - [ ] Rollback tested and fast; data/schema migrations reversible or staged
 
 ## Data

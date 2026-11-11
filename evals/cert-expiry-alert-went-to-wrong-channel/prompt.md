@@ -9,7 +9,7 @@ everything is on fire. since 17:56 UTC browsers show "your connection is not pri
 
 the person who bought it from the commercial CA did it by hand last year and has since moved teams. we're moving to Let's Encrypt via cert-manager but nobody has issued one from it yet, this would be the first. i can ssh to both load balancers.
 
-also, our probe rules are in the attached file. i'm guessing someone saw the cert alert at some point, i can scroll back in the chat channel it posts to, it has been posting for about a month. i also noticed the pager app has no events from our monitoring since 1 Jul 09:12 (today is 30 Jul), but figured that's just a quiet month.
+also, our probe rules are in the attached file. i also noticed the pager app has no events from our monitoring since 1 Jul 09:12 (today is 30 Jul), but figured that's just a quiet month.
 
 what do i do right now, and what should we change afterwards?
 

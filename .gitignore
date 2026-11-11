@@ -7,3 +7,4 @@ references/
 *-workspace/
 .DS_Store
 __pycache__/
+evals/results/

@@ -13,6 +13,7 @@ Mark each item: ✅ in place · ⚠️ partial · ❌ missing · ❓ unknown (ne
 - Traffic: peak and average RPS per journey; low-traffic paths (< ~100 failures allowed per window — check with `sre_calc.py lowtraffic`):
 - Existing SLOs/SLAs and contractual commitments:
 - Recent incidents (last 6–12 months) and their triggers:
+- Recent changes of every kind (code, config, data, policy, flag, quota, secret pushes), including dormant settings that a recent change finally activated. Compare the rendered/effective config in the running system, not just the source diff (redact secrets before pasting):
 - Owning team(s) and on-call rotation:
 
 ## 1. Architecture and dependency map
@@ -48,15 +49,18 @@ List every component on the critical path, including third parties.
 - [ ] Pages are on symptoms (SLO burn), not causes (CPU high, pod restarted).
 - [ ] Multiwindow, multi-burn-rate alerts (`sre_calc.py burn <slo> --window-days <n>`): page on fast burn, ticket on slow burn.
 - [ ] Every page is actionable, urgent and has a runbook link; no page that's routinely ignored.
-- [ ] Cause-based signals (disk 80%, cert expiring in 14 days) go to tickets, not pages — except ones that will cause an outage before a human can react.
+- [ ] Cause-based signals (disk 80%) go to tickets, not pages — except ones that will cause an outage before a human can react.
+- [ ] Expiry (certs, credentials, domains, quotas) has an owner and an escalation path, and pages when the remaining time is shorter than the time needed to renew.
 - [ ] Low-traffic services: synthetic traffic, grouping or a longer window instead of paging on single errors.
 - [ ] Alert routing tested: the page actually reaches a human (escalation, secondary).
+- [ ] Heartbeat to an external receiver, a tested route to a human, and a named owner for every warning channel (`alerting-pipeline-health-checklist.md`).
 
 ### 3.4 Redundancy and failure domains (SRE book Ch 22, 23, 26; Workbook Ch 12)
 - [ ] No single point of failure: every component survives losing one instance, one zone; decide explicitly on one region.
 - [ ] N+2 capacity at peak (one planned + one unplanned loss).
 - [ ] Stateful systems: replication, automatic or rehearsed failover, quorum sized for failure domains.
 - [ ] Dependencies on shared services (DNS, auth, config, secrets) have a plan for when they're slow or down.
+- [ ] Time-bomb dependencies (certs, credentials, domains, quotas, licences): an expiry inventory with an owner for each item (see `alerting-pipeline-health-checklist.md`).
 
 ### 3.5 Overload and cascading failure (SRE book Ch 21, 22; Workbook Ch 11)
 - [ ] Every outbound call has a deadline/timeout, propagated downstream.
@@ -68,7 +72,8 @@ List every component on the critical path, including third parties.
 
 ### 3.6 Change safety (SRE book Ch 8; Workbook Ch 14, 16, App C)
 - [ ] Deploys are progressive (canary with a concurrent control group), with automatic halt or rollback.
-- [ ] Config and feature-flag changes get the same gradual, reversible rollout as code.
+- [ ] Config and feature-flag changes get the same gradual, reversible rollout as code. So do data, policy, quota and secret pushes.
+- [ ] Rollouts check the effective config in the running system (not just the source diff) and ask what a change activates later or elsewhere.
 - [ ] Rollback is one step, tested, and takes minutes.
 - [ ] Irreversible changes (schema/data migrations) are staged and backward-compatible.
 - [ ] Infra-as-code is reviewed and has drift detection; no manual production changes without a record.
