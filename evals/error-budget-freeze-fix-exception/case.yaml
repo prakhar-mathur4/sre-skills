@@ -1,0 +1,7 @@
+# Synthetic scenario: no public postmortem backs this case; the numbers are invented but checked with scripts/sre_calc.py.
+schema_version: "1.1"
+name: error-budget-freeze-fix-exception
+expected_outcome: |
+  Runs the numbers (sre_calc.py budget 99.9 --days 28 --bad-minutes 31: 76.9% consumed, ~9.3 min left of 40.3) and reads the attached policy correctly: the budget is "at risk" (over 50% used, not yet exhausted), not exhausted, so the hard halt does not formally apply but extra caution does. Separates the reliability work (pool setting fix plus connection-pool alert: ship with a canary) from the loyalty-points feature (a risky change against ~9 min of headroom). Offers options for the feature rather than a bare yes/no: feature flag with a staged rollout and abort criteria, delay, or escalation to the named decision-maker (CTO, who owns tie-breaks even though they are in Tokyo). Frames the policy as a decision tool, not punishment, recommends writing the decision down, notes the 31-minute incident (over 20% of budget) requires a blameless postmortem with action items, and gives the PM an honest, specific message with numbers and dates.
+context:
+  scaffold_script: place-files.sh

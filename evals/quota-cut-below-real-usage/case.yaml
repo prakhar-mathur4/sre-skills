@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: quota-cut-below-real-usage
+expected_outcome: |
+  Response mitigates first: after a quick read-only check that real and reported usage disagree (dashboard says 0 GB against a 2 GB limit while writes fail and the database is plainly larger than 2 GB on the host), it recommends raising the auth-db quota or reverting enforcement from enforce to warn-only, marked with ⚠️ and giving the owner, blast radius and undo steps. It does not trust the dashboard's zero, verifies recovery through login success rate and write error rate rather than the quota dashboard, and inventories other services whose usage may also be misreported under the same enforcement change. It proposes preventive actions (alert on enforcement-mode changes, alert on near-zero reported usage for known-large resources, staged or canaried enforcement) and a blameless postmortem, and does not restart or fail over the database as the first move.

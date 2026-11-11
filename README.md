@@ -74,7 +74,7 @@ sre/
 │   └── reliability-gap-assessment.md
 ├── scripts/
 │   └── sre_calc.py               Calculator for availability and error budgets
-├── evals/                        6 test cases used to check the skill
+├── evals/                        10 test cases used to check the skill
 ├── tests/                        calculator tests
 ├── tools/check_skill.py          repo checks (frontmatter, links, no private files)
 └── .github/                      automated checks, issue and PR templates
@@ -220,7 +220,7 @@ The global folders in your home directory (Option A) avoid this problem entirely
 
 ## Testing
 
-The `evals/` folder has 6 realistic test cases: SLO design, an alert review, a postmortem, a canary rollout, a live MySQL incident, and a low-traffic SLO. Each one has pass/fail checks. During development they were run with and without the skill: in the first round the agent passed 100% of checks with the skill and 86.9% without it.
+The `evals/` folder has 10 realistic test cases: SLO design, an alert review, a postmortem, a canary rollout, a live MySQL incident, a low-traffic SLO, clean logs after a recent config change, an expired certificate with a dead alert path, a quota cut with a misleading dashboard, and an error-budget freeze decision (synthetic). Each one has pass/fail checks. The first six were run with and without the skill during development: in the first round the agent passed 100% of checks with the skill and 86.9% without it.
 
 With Claude Code you can rerun them yourself:
 ```bash
