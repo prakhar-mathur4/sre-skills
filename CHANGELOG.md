@@ -4,6 +4,8 @@ Notable changes to this skill. Versions follow [Semantic Versioning](https://sem
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-11-11
+
 ### Added
 - `assets/alerting-pipeline-health-checklist.md`: heartbeat (dead man's switch) alerts, an end-to-end test alert, owners for every alert route, separate failure domains, and a section on things that expire (certificates, credentials, quotas) with an emergency-reissue caution.
 - Error budget policy template: a concrete "at risk" tier, exceptions (a fix is allowed but still goes through safe-change rules; a deadline is not an exception), freeze scope, freeze exit criteria and a worked example.
@@ -35,5 +37,6 @@ First public release.
 - Contribution guide, code of conduct, security policy, issue and pull request templates.
 - Automated checks on every push and pull request (`tools/check_skill.py`) and calculator tests (`tests/`).
 
-[Unreleased]: https://github.com/prakhar-mathur4/sre-skills/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/prakhar-mathur4/sre-skills/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/prakhar-mathur4/sre-skills/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/prakhar-mathur4/sre-skills/releases/tag/v1.0.0
