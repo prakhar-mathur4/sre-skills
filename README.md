@@ -51,6 +51,24 @@ These rules come from the books. They're what keeps the skill safe to use near p
 8. **Reliability is a budget.** The goal isn't maximum reliability; it's the right target for your scale.
 9. **Leave it better.** Every page leads to a fix, and every incident to action items with owners.
 
+For reviews and design work, Claude also **learns your system first**. See the next section.
+
+---
+
+## Get the best results: let it learn your system first
+
+Advice about a system Claude doesn't know is a guess. Before a review, SLO or alerting task, the skill looks for a system profile, `sre-context.md`. If there isn't one, it:
+
+1. reads your Terraform, Helm or Kubernetes manifests, code and alert rules, read-only, if it can see them;
+2. asks one short list of what the files can't show: the product and its users, the flows that matter, traffic, team and on-call, and existing SLOs;
+3. writes `sre-context.md` from `assets/system-profile-template.md` and waits for your corrections before the analysis.
+
+Every later session starts from that file, so you answer the questions once. To start it yourself:
+
+> Use the sre skill. Learn our system first: read the repo (read-only), ask me what you can't find, and write sre-context.md. Then find our reliability gaps and suggest SLOs and alerts.
+
+**In a live incident it doesn't do this.** Mitigation comes first. It asks only what it needs to act (what users see, what changed recently, where it runs) and offers to build the profile afterwards.
+
 ---
 
 ## What's inside
@@ -72,10 +90,11 @@ sre/
 │   ├── capacity-estimate-worksheet.md
 │   ├── oncall-handoff-template.md
 │   ├── reliability-gap-assessment.md
-│   └── alerting-pipeline-health-checklist.md
+│   ├── alerting-pipeline-health-checklist.md
+│   └── system-profile-template.md     what the agent learns about your system (sre-context.md)
 ├── scripts/
 │   └── sre_calc.py               Calculator for availability and error budgets
-├── evals/                        10 test cases used to check the skill
+├── evals/                        11 test cases used to check the skill
 ├── tests/                        calculator tests
 ├── tools/check_skill.py          repo checks (frontmatter, links, no private files)
 └── .github/                      automated checks, issue and PR templates
@@ -206,6 +225,8 @@ The global folders in your home directory (Option A) avoid this problem entirely
 ---
 
 ## Example prompts
+
+- "Learn our system first: read the repo, ask me what you can't find, and write sre-context.md."
 
 - "Our checkout API does 40M requests a month and product wants five nines. Help me set SLOs and an error budget policy."
 - "Here's our Prometheus rules file; on-call gets 30 pages a week. What's wrong with it?"

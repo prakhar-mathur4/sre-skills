@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: learn-system-before-review
+expected_outcome: |
+  The user asks for SLOs and alerts with almost no context beyond an infra repo. The response reads the Terraform, manifests and alert rules first (read-only) and uses what it found (EKS in ap-south-1, storefront-api with 3 replicas, a single order-worker, single-AZ Postgres with 1-day backups, single-node Redis, SQS, external payment and email providers, cause-based CPU/restart pages). It writes a system profile (sre-context.md) with what it found and the open questions, asks one short list of the things files can't show (product and users, critical flows, traffic, team and on-call, existing SLOs), explains that the advice will be better once those are answered, and does not present final SLO targets as decided before then; any numbers are clearly provisional. It changes none of the input files.

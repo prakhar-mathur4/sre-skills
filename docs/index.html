@@ -412,27 +412,27 @@ footer a:hover { color: var(--ink); }
       <div class="section-head">
         <span class="eyebrow">Start here</span>
         <h2>Let it learn your system first.</h2>
-        <p>Advice without context is a guess. Have the agent learn how your system runs before it reviews anything, and save what it learns so every later session starts from there.</p>
+        <p>Advice without context is a guess. Before a review, SLO or alerting task, the skill learns how your system runs and saves it as <code>sre-context.md</code>, so every later session starts from there. You can also kick it off yourself with these prompts.</p>
       </div>
       <div class="steps">
         <div class="step">
           <div class="step-copy">
             <h3>Learn the system</h3>
-            <p>It asks a few short questions, then reads your Terraform, manifests, code and alert rules. Read-only.</p>
+            <p>It reads your Terraform, manifests, code and alert rules (read-only), then asks only what the files can't show.</p>
           </div>
           <div class="codeblock prompt">
             <button type="button" data-copy="prompt-learn">Copy</button>
             <pre><code id="prompt-learn">Use the sre skill. Before giving any reliability advice, learn our system and build a system profile.
 
-1. Ask me first, in one short list:
-   - What the product is and who uses it
-   - The 2–3 most important user flows (e.g. login, checkout)
-   - Team size, on-call setup, and whether we have SLOs today
-
-2. Then read the repo (read-only, change nothing):
+1. Read the repo first (read-only, change nothing):
    - Terraform / Helm / Kubernetes / docker-compose: where it runs, which cloud, databases, queues, caches
    - Source code: services, endpoints, dependencies, timeouts, retries, health checks
    - Monitoring: alert rules, dashboards, logging and tracing
+
+2. Then ask me what the files can't show, in one short list:
+   - What the product is and who uses it
+   - The 2–3 most important user flows (e.g. login, checkout)
+   - Traffic, team size, on-call setup, and whether we have SLOs today
 
 3. Write it to sre-context.md: architecture, critical flows, current monitoring, and anything you couldn't verify.
 
@@ -462,7 +462,7 @@ Show me the profile and wait for my corrections before analyzing anything.</code
       </div>
       <div class="callout">
         <strong>Being paged right now? Skip the questions.</strong>
-        <p>In a live incident, mitigation comes first. Tell it what users are seeing and what changed recently. If you have an sre-context.md, say "read sre-context.md first".</p>
+        <p>In a live incident, mitigation comes first and the skill won't hold it up with questions. Tell it what users are seeing and what changed recently. If you have an sre-context.md, it reads that.</p>
       </div>
     </div>
   </section>

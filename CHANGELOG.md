@@ -4,6 +4,11 @@ Notable changes to this skill. Versions follow [Semantic Versioning](https://sem
 
 ## [Unreleased]
 
+### Added
+- "Know the system first" step in `SKILL.md`: before a review, SLO, alerting or design task, the agent reads `sre-context.md` if it exists. Otherwise it reads the infrastructure, code and alert rules (read-only), asks one short list of what files can't show, and writes the profile for the user to correct. It never delays mitigation in a live incident.
+- `assets/system-profile-template.md`: the system profile the agent writes and reuses as `sre-context.md`.
+- Eval `learn-system-before-review`: a request for SLOs and alerts with only an infra repo for context.
+
 ## [1.1.0] - 2026-11-11
 
 ### Added

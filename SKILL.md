@@ -34,9 +34,23 @@ These matter most when the user is touching a real system. They come straight fr
 8. **Reliability is a budget, not a maximum.** Push back on unjustified targets ("five nines") with numbers; recommend what the user's size and stage actually need (SRE book Ch 3; Workbook Ch 2). When deciding releases against a budget, cite the policy tier and the numbers: a freeze covers features and risky changes, a reliability fix still goes out under normal canary rules, and a deadline alone is not an exception (Workbook App B).
 9. **Leave it better.** Turn repeated manual work into automation candidates, every page into either a fix or an alert change, every incident into owned action items (toil: SRE book Ch 5, Workbook Ch 6).
 
+## Know the system first
+
+Advice about a system you don't understand is a guess, and generic advice is how a three-person team ends up with the Google playbook. So before reviewing, designing or recommending anything for the user's system, learn it, and keep what you learn.
+
+1. **Look for a system profile.** Check for `sre-context.md` in the working directory or repo root (or wherever the user points). If it exists, read it, use it, and say which parts look out of date.
+2. **No profile, and the work depends on the system** (gap review, SLOs, alerting, capacity, rollout plan, architecture review)? Tell the user plainly that the result will be much better if you learn the system first, and that you'll save what you learn so later sessions start from it. Then do it:
+   - **Read before you ask.** If you can see their repos, read the infrastructure (Terraform, Helm, Kubernetes manifests, docker-compose), the code paths that matter (services, endpoints, dependencies, timeouts, retries, health checks) and the monitoring config (alert rules, dashboards, logging, tracing). Read only; change nothing.
+   - **Then ask what files can't tell you,** in one short list: what the product is and who uses it, the 2–3 user flows that matter most, rough traffic, where it runs (VMs, Kubernetes, Docker, serverless; which cloud), team size and on-call, and whether SLOs exist today. Don't ask what you already found or what the user already said.
+   - **Write the profile** with `assets/system-profile-template.md`, save it as `sre-context.md`, show it, and wait for corrections before the analysis. Mark anything unverified as ❓. Never put secrets, tokens or customer data in it.
+   - If the user's message already gives enough to go on, use it and don't re-ask; list the gaps as assumptions and offer to build the profile. If the user declines, go ahead, but label every assumption and say what would change the advice.
+3. **Live incident: never block mitigation on this.** Use the profile if there is one. If not, ask at most what you need to act (what users see, what changed recently, where it runs) alongside the first mitigation step, not before it. Offer to build the profile once the incident is mitigated.
+4. **Postmortems and documents from notes:** start from what the notes say, and ask about the specific gaps (e.g., "is ledger-service on the payment path?") rather than refusing to start.
+5. **Keep it current.** When you learn something new about the system, offer to update `sre-context.md` so the next session starts from it.
+
 ## How to work
 
-1. **Identify the mode** (often several):
+1. **Identify the mode** (often several), and apply *Know the system first* to it:
    - **Troubleshoot** — something is broken or slow now. Start with impact and mitigation, then a hypothesis-driven investigation (SRE book Ch 12) using the commands in `school-of-sre/troubleshooting.md` and the topic cards. Ask for the specific outputs you need (graphs, logs, command output) rather than guessing.
    - **Design / do the work** — SLOs, alerts, on-call, canary plans, capacity estimates, overload handling.
    - **Review** — critique config, rules, runbooks, postmortems, or architecture against the sources.
@@ -119,12 +133,13 @@ Tables from the PDFs are flattened in the chapter text; for numeric tables prefe
 | `oncall-handoff-template.md` | SRE book Ch 11; Workbook Ch 8 |
 | `reliability-gap-assessment.md` | SRE book Ch 6, 10, 21, 22, 26, 27, 32; Workbook Ch 4, 5, 18 |
 | `alerting-pipeline-health-checklist.md` | SRE book Ch 6, 10; Workbook Ch 4, 5 |
+| `system-profile-template.md` | SRE book Ch 27, 32; Workbook Ch 18 (what a production readiness review needs to know) |
 
 Fill these in rather than inventing a structure; adapt to the user's conventions if they have their own. When writing a postmortem from notes: keep it blameless (roles, not culprits), put the timeline in UTC (convert and show the source timezone), separate trigger from root/contributing causes, and make action items specific, owned, prioritized, and typed (prevent / mitigate / detect / process). Then run it through `postmortem-review-checklist.md` before handing it over.
 
 ## Reviewing an existing setup
 
-When the user asks what's missing to make a system reliable, or for a gap / readiness review of a whole system, fill in `assets/reliability-gap-assessment.md`: map components, mark each check ✅/⚠️/❌/❓ only from evidence you saw, then give ranked findings and concrete SLIs, alert rules (thresholds from `sre_calc.py burn`) and dashboards in the user's tooling. For a narrower review (one rules file, one runbook), use the structure below.
+When the user asks what's missing to make a system reliable, or for a gap / readiness review of a whole system, start from the system profile (see *Know the system first*), then fill in `assets/reliability-gap-assessment.md`: map components, mark each check ✅/⚠️/❌/❓ only from evidence you saw, then give ranked findings and concrete SLIs, alert rules (thresholds from `sre_calc.py burn`) and dashboards in the user's tooling. For a narrower review (one rules file, one runbook), use the structure below.
 
 Structure the review as:
 

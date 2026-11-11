@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: storefront-api
+  namespace: shop
+spec:
+  replicas: 3
+  selector:
+    matchLabels: { app: storefront-api }
+  template:
+    metadata:
+      labels: { app: storefront-api }
+    spec:
+      containers:
+        - name: api
+          image: registry.example.com/storefront-api:2.14.0
+          ports: [{ containerPort: 8080 }]
+          env:
+            - { name: ORDERS_DB_HOST, value: orders-prod.internal }
+            - { name: REDIS_HOST, value: sessions-prod.internal }
+            - { name: PAYMENT_PROVIDER_URL, value: https://api.payments.example }
+            - { name: PAYMENT_TIMEOUT_MS, value: "10000" }
+          readinessProbe:
+            httpGet: { path: /healthz, port: 8080 }
+          livenessProbe:
+            httpGet: { path: /healthz, port: 8080 }
+          resources:
+            requests: { cpu: 250m, memory: 512Mi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: storefront-api
+  namespace: shop
+spec:
+  selector: { app: storefront-api }
+  ports: [{ port: 80, targetPort: 8080 }]
